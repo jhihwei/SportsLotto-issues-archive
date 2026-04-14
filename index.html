@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ball-in UI Sample Pages</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== BASE RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root { --font: 'Plus Jakarta Sans', system-ui, sans-serif; }
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --bg-page: #F7F3ED;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #FFF8EE;
+  --bg-nav: #FFFFFF;
+  --bg-header: linear-gradient(135deg, #1B8C4A 0%, #14A050 40%, #0D7A3E 100%);
+  --bg-tab: #F0EBE3;
+  --bg-tab-active: #1B8C4A;
+  --bg-input: #F5F0E8;
+  --text-primary: #1A1D2E;
+  --text-secondary: #6B7084;
+  --text-muted: #9CA0B0;
+  --text-on-primary: #FFFFFF;
+  --text-on-header: #FFFFFF;
+  --text-tab: #6B7084;
+  --text-tab-active: #FFFFFF;
+  --border: #E8E3DA;
+  --border-card: #E0DACE;
+  --primary: #1B8C4A;
+  --primary-light: #E8F5EE;
+  --accent: #F5A623;
+  --accent-light: #FFF3D6;
+  --danger: #E84545;
+  --danger-light: #FFECEC;
+  --info: #3B82F6;
+  --shadow-card: 0 2px 12px rgba(26,29,46,0.08);
+  --shadow-header: 0 4px 20px rgba(27,140,74,0.25);
+  --icon-filter: brightness(0) saturate(100%) invert(15%) sepia(10%) saturate(500%) hue-rotate(200deg);
+  --icon-filter-white: brightness(0) saturate(100%) invert(100%);
+  --frame-opacity: 0.12;
+}
+
+/* ===== DARK THEME ===== */
+[data-theme="dark"] {
+  --bg-page: #0F1219;
+  --bg-card: #1A1F2E;
+  --bg-card-alt: #1E2538;
+  --bg-nav: #151A26;
+  --bg-header: linear-gradient(135deg, #0D4A28 0%, #1B8C4A 50%, #0D7A3E 100%);
+  --bg-tab: #252B3B;
+  --bg-tab-active: #1B8C4A;
+  --bg-input: #252B3B;
+  --text-primary: #F0ECE4;
+  --text-secondary: #9CA0B0;
+  --text-muted: #6B7084;
+  --text-on-primary: #FFFFFF;
+  --text-on-header: #FFFFFF;
+  --text-tab: #9CA0B0;
+  --text-tab-active: #FFFFFF;
+  --border: #2A3040;
+  --border-card: #2E3548;
+  --primary: #2EAE5E;
+  --primary-light: #162E20;
+  --accent: #F5A623;
+  --accent-light: #3D3520;
+  --danger: #FF6B6B;
+  --danger-light: #3D2020;
+  --info: #60A5FA;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-header: 0 4px 20px rgba(0,0,0,0.4);
+  --icon-filter: brightness(0) saturate(100%) invert(90%) sepia(5%) saturate(200%) hue-rotate(180deg);
+  --icon-filter-white: brightness(0) saturate(100%) invert(100%);
+  --frame-opacity: 0.18;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ================================================================
+   TOP NAVBAR
+   ================================================================ */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  transition: background 0.3s, border-color 0.3s;
+}
+.top-nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center;
+  padding: 0 24px; height: 56px;
+}
+.brand {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; margin-right: 32px; flex-shrink: 0;
+}
+.brand-icon {
+  width: 32px; height: 32px; background: var(--primary); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900; color: #FFF;
+}
+.brand-text {
+  font-size: 17px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px;
+}
+
+/* Desktop nav links */
+.nav-links {
+  display: flex; align-items: center; gap: 4px; flex: 1;
+}
+.nav-link {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px; border: none;
+  background: transparent; font-family: var(--font);
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.nav-link:hover { background: var(--bg-tab); color: var(--text-primary); }
+.nav-link.active { background: var(--primary-light); color: var(--primary); }
+.nav-link .nl-icon {
+  width: 18px; height: 18px; image-rendering: pixelated;
+  filter: var(--icon-filter); opacity: 0.6;
+}
+.nav-link.active .nl-icon {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(40%) sepia(90%) saturate(500%) hue-rotate(100deg);
+}
+.nav-link .nl-badge {
+  background: var(--danger); color: #FFF; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px; margin-left: 2px;
+}
+
+/* Nav right area */
+.nav-right {
+  display: flex; align-items: center; gap: 12px; margin-left: auto;
+}
+.nav-user {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+}
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: var(--primary);
+}
+.nav-pts { font-size: 12px; font-weight: 700; color: var(--accent); }
+
+/* Theme toggle in navbar */
+.theme-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--bg-card); cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; color: var(--text-primary);
+}
+.theme-btn:hover { transform: scale(1.1); }
+
+/* Hamburger (mobile) */
+.hamburger {
+  display: none; width: 36px; height: 36px; border: none;
+  background: transparent; cursor: pointer; margin-left: auto;
+  flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+}
+.hamburger span {
+  display: block; width: 20px; height: 2px; background: var(--text-primary);
+  border-radius: 2px; transition: all 0.2s;
+}
+
+/* Content push below navbar */
+.main-content {
+  padding-top: 56px;
+  min-height: 100vh;
+}
+
+/* Container for centered content */
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* ===== RESPONSIVE NAVBAR ===== */
+@media (max-width: 768px) {
+  .top-nav-inner { padding: 0 16px; height: 52px; }
+  .nav-links { display: none; }
+  .nav-user { display: none; }
+  .hamburger { display: flex; }
+  .main-content { padding-top: 52px; padding-bottom: 64px; }
+}
+
+/* ===== MOBILE BOTTOM NAV ===== */
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: var(--bg-nav); border-top: 1px solid var(--border);
+  padding: 6px 0 env(safe-area-inset-bottom, 10px);
+}
+.bottom-nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 6px 4px; border: none; background: transparent;
+  cursor: pointer; font-family: var(--font);
+}
+.bottom-nav-item .bnav-icon {
+  width: 24px; height: 24px; image-rendering: pixelated;
+  filter: var(--icon-filter); opacity: 0.5;
+}
+.bottom-nav-item .bnav-label { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+.bottom-nav-item.active .bnav-icon {
+  opacity: 1; filter: brightness(0) saturate(100%) invert(40%) sepia(90%) saturate(500%) hue-rotate(100deg);
+}
+.bottom-nav-item.active .bnav-label { color: var(--primary); }
+.notif-dot { position: relative; }
+.notif-dot::after {
+  content: '3'; position: absolute; top: -4px; right: -8px;
+  width: 16px; height: 16px; background: var(--danger); color: #FFF;
+  font-size: 9px; font-weight: 700; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+@media (max-width: 768px) { .bottom-nav { display: flex; } }
+
+/* ===== VIEW MODE TOGGLE ===== */
+.view-toggle {
+  position: fixed; top: 64px; right: 20px; z-index: 999;
+  display: flex; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-card);
+}
+.view-toggle button {
+  padding: 6px 16px; border: none; background: transparent;
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+}
+.view-toggle button.active { background: var(--primary); color: #FFF; }
+@media (max-width: 768px) { .view-toggle { display: none; } }
+
+/* ===== PAGE SECTIONS ===== */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ===== HEADER HERO ===== */
+.header-hero {
+  background: var(--bg-header);
+  padding: 28px 20px 20px;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-header);
+  margin: 12px 14px 0;
+  border-radius: 14px;
+}
+@media (min-width: 769px) { .header-hero { border-radius: 16px; margin: 20px 24px 0; padding: 32px 24px 24px; } }
+.header-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url('assets/header.png');
+  background-size: cover; background-position: center;
+  opacity: var(--frame-opacity); image-rendering: pixelated;
+}
+.header-hero .hero-content { position: relative; z-index: 1; }
+.header-hero h1 { font-size: 28px; font-weight: 800; color: #FFF; margin-bottom: 4px; letter-spacing: -0.5px; }
+.header-hero p { font-size: 15px; color: rgba(255,255,255,0.8); }
+
+/* Stat row */
+.stat-row { display: flex; gap: 10px; margin-top: 16px; }
+@media (min-width: 769px) { .stat-row { max-width: 500px; } }
+.stat-chip {
+  flex: 1; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+  border-radius: 10px; padding: 12px; text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.stat-chip .stat-val { font-size: 24px; font-weight: 800; color: #FFF; }
+.stat-chip .stat-label { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ===== ROOM CARDS GRID ===== */
+.room-grid { display: grid; gap: 0; }
+@media (min-width: 769px) {
+  .room-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 4px; padding: 0 8px; }
+}
+@media (min-width: 1200px) { .room-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* ===== PIXEL CARD ===== */
+.pixel-card { margin: 12px 16px; position: relative; }
+@media (min-width: 769px) { .pixel-card { margin: 12px 16px; } }
+.pixel-card-inner {
+  background: var(--bg-card); border: 1px solid var(--border-card);
+  border-radius: 14px; padding: 18px; box-shadow: var(--shadow-card);
+  transition: background 0.3s, border-color 0.3s; height: 100%;
+  position: relative;
+}
+.pixel-card-inner::before {
+  content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+  width: 4px; border-radius: 0 4px 4px 0;
+}
+.pixel-card.green .pixel-card-inner::before { background: #1B8C4A; }
+.pixel-card.orange .pixel-card-inner::before { background: #F5A623; }
+.pixel-card.blue .pixel-card-inner::before { background: #3B82F6; }
+.pixel-card.red .pixel-card-inner::before { background: #E84545; }
+
+/* Room card inner */
+.room-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.room-title { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+.room-sport { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+.room-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; }
+.badge-active { background: var(--primary-light); color: var(--primary); }
+.badge-pending { background: var(--accent-light); color: var(--accent); }
+.badge-finished { background: var(--bg-tab); color: var(--text-muted); }
+.room-meta { display: flex; gap: 14px; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; flex-wrap: wrap; }
+.room-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* ===== INLINE PIXEL BAR ===== */
+.inline-pixel-bar { display: flex; align-items: center; gap: 10px; }
+.inline-pixel-bar label { font-size: 12px; font-weight: 600; color: var(--text-secondary); min-width: 48px; }
+.inline-pixel-bar .bar-wrap { flex: 1; height: 14px; position: relative; image-rendering: pixelated; }
+.inline-pixel-bar .bar-under-img, .inline-pixel-bar .bar-over-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated;
+}
+.inline-pixel-bar .bar-fill-img {
+  position: absolute; left: 1px; top: 1px; bottom: 1px; height: calc(100% - 2px); image-rendering: pixelated;
+}
+.inline-pixel-bar .bar-val { font-size: 13px; font-weight: 800; color: var(--text-primary); min-width: 36px; text-align: right; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 20px; border: none; border-radius: 12px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--primary); color: #FFF; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-accent { background: var(--accent); color: #1A1D2E; }
+.btn-accent:hover { filter: brightness(1.1); }
+.btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+.btn-danger { background: var(--danger); color: #FFF; }
+.btn-ghost { background: var(--bg-tab); color: var(--text-secondary); }
+.btn-sm { padding: 10px 16px; font-size: 13px; }
+.btn-full { width: 100%; }
+
+/* ===== SECTION TITLE ===== */
+.section-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 18px 16px 10px; font-size: 16px; font-weight: 700; color: var(--text-primary);
+}
+@media (min-width: 769px) { .section-title { padding: 20px 24px 10px; font-size: 17px; } }
+.section-title .pixel-icon { width: 22px; height: 22px; image-rendering: pixelated; filter: var(--icon-filter); }
+
+/* ===== TAB BAR ===== */
+.tab-bar { display: flex; gap: 4px; margin: 0 16px; padding: 4px; background: var(--bg-tab); border-radius: 10px; }
+@media (min-width: 769px) { .tab-bar { margin: 0 24px; max-width: 500px; } }
+.tab-bar button {
+  flex: 1; padding: 10px 4px; border: none; border-radius: 8px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  color: var(--text-tab); background: transparent; cursor: pointer; transition: all 0.2s;
+}
+.tab-bar button.active {
+  background: var(--bg-tab-active); color: var(--text-tab-active);
+  box-shadow: 0 2px 8px rgba(27,140,74,0.3);
+}
+
+/* ===== SPRITE ANIMATIONS ===== */
+.sprite-progress {
+  width: 180px; height: 18px;
+  background-image: url('assets/spr_ui_progress_strip5.png');
+  background-size: 900px 18px; image-rendering: pixelated;
+  animation: sprite-anim 1s steps(5) infinite;
+}
+@keyframes sprite-anim { to { background-position: -900px 0; } }
+.sprite-soul {
+  width: 32px; height: 32px;
+  background-image: url('assets/spr_soul_strip8.png');
+  background-size: 256px 32px; image-rendering: pixelated;
+  animation: soul-anim 0.8s steps(8) infinite; display: inline-block;
+}
+@keyframes soul-anim { to { background-position: -256px 0; } }
+
+/* ===== PIXEL DIVIDER ===== */
+.pixel-divider {
+  height: 4px; margin: 0 16px; image-rendering: pixelated;
+  background: repeating-linear-gradient(90deg,
+    var(--primary) 0px, var(--primary) 8px, transparent 8px, transparent 12px,
+    var(--accent) 12px, var(--accent) 20px, transparent 20px, transparent 24px);
+  opacity: 0.3; border-radius: 2px;
+}
+@media (min-width: 769px) { .pixel-divider { margin: 0 24px; } }
+
+/* ================================================================
+   PREDICTION ROOM
+   ================================================================ */
+.room-header-panel {
+  background: var(--bg-header); padding: 22px 20px; position: relative; overflow: hidden;
+  margin: 12px 14px 0; border-radius: 14px;
+}
+@media (min-width: 769px) { .room-header-panel { border-radius: 16px; margin: 20px 24px 0; padding: 24px; } }
+.room-header-panel::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url('assets/header.png');
+  background-size: cover; opacity: var(--frame-opacity); image-rendering: pixelated;
+}
+.room-header-panel * { position: relative; z-index: 1; }
+.room-header-panel h2 { font-size: 20px; font-weight: 800; color: #FFF; }
+.room-header-panel .room-desc { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px; }
+.room-stats-strip { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.room-stat-pill {
+  padding: 6px 14px; background: rgba(255,255,255,0.12); border-radius: 20px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9); backdrop-filter: blur(4px);
+}
+
+/* My Status */
+.my-status {
+  margin: 14px 16px; background: var(--bg-card); border: 2px solid var(--primary);
+  border-radius: 14px; padding: 16px; box-shadow: var(--shadow-card);
+  display: flex; align-items: center; gap: 14px;
+}
+@media (min-width: 769px) { .my-status { margin: 16px 24px; } }
+.my-status-avatar {
+  width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--primary);
+}
+.my-status-info { flex: 1; }
+.my-status-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.my-status-detail { display: flex; gap: 14px; margin-top: 4px; font-size: 13px; color: var(--text-secondary); }
+.my-status-pts { font-size: 22px; font-weight: 800; color: var(--accent); }
+
+/* Match cards grid */
+.match-grid { display: grid; gap: 0; }
+@media (min-width: 769px) {
+  .match-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 4px; padding: 0 8px; }
+}
+.match-card {
+  margin: 10px 16px; background: var(--bg-card); border: 1px solid var(--border-card);
+  border-radius: 14px; padding: 16px; box-shadow: var(--shadow-card); transition: background 0.3s;
+}
+.match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.match-league { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; }
+.match-time { font-size: 11px; color: var(--text-muted); }
+.match-teams { display: flex; align-items: center; gap: 12px; }
+.team { flex: 1; text-align: center; }
+.team-name { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.team-odds { font-size: 22px; font-weight: 800; color: var(--accent); }
+.match-vs { font-size: 12px; font-weight: 700; color: var(--text-muted); padding: 5px 12px; background: var(--bg-tab); border-radius: 20px; }
+.match-draw { text-align: center; margin-top: 8px; }
+.draw-label { font-size: 11px; color: var(--text-muted); }
+.draw-odds { font-size: 16px; font-weight: 700; color: var(--text-secondary); }
+.match-actions { display: flex; gap: 8px; margin-top: 12px; }
+.pick-btn {
+  flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 12px;
+  background: var(--bg-card-alt); font-family: var(--font); font-size: 14px; font-weight: 700;
+  color: var(--text-primary); cursor: pointer; transition: all 0.15s; text-align: center;
+}
+.pick-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+.pick-btn.selected {
+  border-color: var(--primary); background: var(--primary); color: #FFF;
+  box-shadow: 0 2px 8px rgba(27,140,74,0.3);
+}
+
+/* ================================================================
+   LEADERBOARD
+   ================================================================ */
+.lb-layout { display: block; }
+@media (min-width: 960px) { .lb-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: start; } }
+.lb-podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; padding: 28px 16px 16px; }
+.podium-slot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.podium-slot.first { order: 2; }
+.podium-slot.second { order: 1; }
+.podium-slot.third { order: 3; }
+.podium-avatar {
+  width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--accent);
+  background: var(--bg-tab); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--text-primary);
+}
+.podium-slot.first .podium-avatar {
+  width: 68px; height: 68px; font-size: 22px; border-color: #FFD700;
+  box-shadow: 0 0 20px rgba(255,215,0,0.4);
+}
+.podium-medal { width: 30px; height: 30px; image-rendering: pixelated; }
+.podium-slot.first .podium-medal { width: 38px; height: 38px; }
+.podium-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.podium-pts { font-size: 13px; color: var(--accent); font-weight: 700; }
+.podium-bar { width: 64px; border-radius: 6px 6px 0 0; }
+.podium-slot.first .podium-bar { height: 60px; background: #FFD700; opacity: 0.4; }
+.podium-slot.second .podium-bar { height: 44px; background: #C0C0C0; opacity: 0.35; }
+.podium-slot.third .podium-bar { height: 32px; background: #CD7F32; opacity: 0.35; }
+
+.lb-list { padding: 0 16px 16px; }
+@media (min-width: 769px) { .lb-list { padding: 0 24px 24px; } }
+.lb-row {
+  display: flex; align-items: center; gap: 14px; padding: 14px;
+  margin-bottom: 8px; background: var(--bg-card); border: 1px solid var(--border-card);
+  border-radius: 12px; box-shadow: var(--shadow-card); transition: background 0.3s;
+}
+.lb-rank { font-size: 16px; font-weight: 800; color: var(--text-muted); width: 24px; text-align: center; }
+.lb-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--bg-tab);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--text-secondary);
+}
+.lb-info { flex: 1; }
+.lb-name { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.lb-stat { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.lb-pts { font-size: 18px; font-weight: 800; color: var(--accent); }
+.lb-you { border-color: var(--primary); background: var(--primary-light); }
+.lb-eliminated { opacity: 0.5; }
+.lb-eliminated .lb-name { text-decoration: line-through; }
+.eliminated-badge {
+  font-size: 10px; font-weight: 700; color: var(--danger);
+  background: var(--danger-light); padding: 2px 6px; border-radius: 4px; margin-left: 6px;
+}
+
+/* ================================================================
+   INVITE / SHARE
+   ================================================================ */
+.invite-hero {
+  background: var(--bg-header); padding: 32px 20px; text-align: center;
+  position: relative; overflow: hidden;
+  margin: 12px 14px 0; border-radius: 14px;
+}
+@media (min-width: 769px) { .invite-hero { border-radius: 16px; margin: 20px 24px 0; padding: 36px 24px; } }
+.invite-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url('assets/header.png');
+  background-size: cover; opacity: var(--frame-opacity); image-rendering: pixelated;
+}
+.invite-hero * { position: relative; z-index: 1; }
+.invite-hero h2 { font-size: 24px; font-weight: 800; color: #FFF; margin-bottom: 6px; }
+.invite-hero p { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 16px; }
+.invite-body { display: block; }
+@media (min-width: 960px) {
+  .invite-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: start; }
+  .invite-body > div:last-child { padding: 0 24px; }
+}
+.invite-link-box { display: flex; gap: 8px; margin: 14px 16px; }
+@media (min-width: 769px) { .invite-link-box { margin: 16px 24px; } }
+.invite-link-input {
+  flex: 1; padding: 14px; background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 12px; font-family: var(--font); font-size: 14px; color: var(--text-primary);
+}
+.invite-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px; }
+@media (min-width: 769px) { .invite-stats { margin: 16px 24px; } }
+.invite-stat-card {
+  background: var(--bg-card); border: 1px solid var(--border-card);
+  border-radius: 14px; padding: 16px; text-align: center; box-shadow: var(--shadow-card);
+}
+.invite-stat-val { font-size: 26px; font-weight: 800; color: var(--primary); }
+.invite-stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.share-card-preview {
+  margin: 16px; background: var(--bg-header); border-radius: 16px;
+  padding: 28px; text-align: center; position: relative; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(27,140,74,0.3);
+}
+@media (min-width: 769px) { .share-card-preview { margin: 16px 24px; } }
+.share-card-preview::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url('assets/frame.png');
+  background-size: cover; opacity: 0.08; image-rendering: pixelated;
+}
+.share-card-preview * { position: relative; z-index: 1; }
+.share-card-preview .share-rank { font-size: 48px; font-weight: 900; color: #FFD700; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.share-card-preview .share-user { font-size: 18px; font-weight: 700; color: #FFF; margin: 4px 0; }
+.share-card-preview .share-msg { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 14px; }
+.share-card-preview .share-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 24px; background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3); border-radius: 24px;
+  font-size: 14px; font-weight: 700; color: #FFF;
+}
+
+/* ================================================================
+   CODEX SUGGESTIONS: pixel asset upgrades
+   ================================================================ */
+
+/* 1. Banner ribbon behind titles */
+.pixel-banner-title {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 56px; z-index: 1;
+}
+.pixel-banner-title::before {
+  content: ''; position: absolute; inset: -4px -20px; z-index: -1;
+  background: url('assets/UI_Flat_Banner04a.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; opacity: 0.85;
+}
+[data-theme="dark"] .pixel-banner-title::before { opacity: 0.7; }
+
+/* Section banner ribbon */
+.section-banner {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 40px; margin-left: -8px; z-index: 1;
+}
+.section-banner::before {
+  content: ''; position: absolute; inset: -2px -12px; z-index: -1;
+  background: url('assets/UI_Flat_Banner02a.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; opacity: 0.8;
+}
+
+/* 2. Featured card with 9-slice pixel frame */
+.pixel-frame-card {
+  border: 14px solid transparent;
+  border-image: url('assets/UI_Flat_Frame03a.png') 14 fill stretch;
+  image-rendering: pixelated;
+  border-radius: 0 !important;
+  background: var(--bg-card);
+  box-shadow: none;
+}
+[data-theme="dark"] .pixel-frame-card {
+  border-image-source: url('assets/UI_Flat_Frame02a.png');
+}
+.pixel-frame-card .pixel-card-inner {
+  border: none; border-radius: 0; box-shadow: none; background: transparent;
+}
+.pixel-frame-card .pixel-card-inner::before { display: none; }
+
+/* 3. Podium avatar frame slots */
+.podium-frame {
+  width: 64px; height: 64px; display: grid; place-items: center;
+  background: url('assets/UI_Flat_FrameSlot02a.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; padding: 6px;
+}
+.podium-frame.gold {
+  width: 80px; height: 80px; padding: 8px;
+  background-image: url('assets/UI_Flat_FrameSlot03a.png');
+}
+.podium-frame.bronze {
+  background-image: url('assets/UI_Flat_FrameSlot01a.png');
+}
+.podium-frame .podium-avatar { border: none; box-shadow: none; width: 100%; height: 100%; }
+
+/* 4. Pixel status badges with FrameMarker */
+.pixel-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 80px; padding: 5px 16px;
+  background: url('assets/UI_Flat_FrameMarker01a.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; border-radius: 0;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--text-primary); text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+.pixel-badge.badge-active {
+  background-image: url('assets/UI_Flat_FrameMarker02a.png');
+  color: #fff;
+}
+.pixel-badge.badge-pending {
+  background-image: url('assets/UI_Flat_FrameMarker03a.png');
+  color: #fff;
+}
+.pixel-badge.badge-finished {
+  background-image: url('assets/UI_Flat_FrameMarker01a.png');
+}
+
+/* 5. Pixel CTA buttons with 4 states */
+.pixel-cta {
+  border: 0; min-height: 44px; padding: 0 28px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  color: #3a2600; cursor: pointer;
+  background: url('assets/UI_Flat_Button01a_1.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; transition: transform 0.1s;
+}
+.pixel-cta:hover {
+  background-image: url('assets/UI_Flat_Button01a_2.png');
+}
+.pixel-cta:active {
+  background-image: url('assets/UI_Flat_Button01a_3.png');
+  transform: translateY(1px);
+}
+.pixel-cta.secondary {
+  background-image: url('assets/UI_Flat_Button02a_1.png');
+}
+.pixel-cta.secondary:hover {
+  background-image: url('assets/UI_Flat_Button02a_2.png');
+}
+.pixel-cta.secondary:active {
+  background-image: url('assets/UI_Flat_Button02a_3.png');
+}
+
+/* 6. Glow prediction panel */
+.glow-panel {
+  position: relative; border-radius: 14px; overflow: hidden;
+}
+.glow-panel::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('assets/rectangle1.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; opacity: 0.12;
+}
+[data-theme="dark"] .glow-panel::before { opacity: 0.25; }
+[data-theme="dark"] .glow-panel { box-shadow: 0 0 24px rgba(70,190,255,0.15); }
+
+/* 7. Dark embossed stat tiles */
+.stat-chip.pixel-stat {
+  position: relative; overflow: hidden;
+}
+.stat-chip.pixel-stat::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('assets/rectangle2.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated; opacity: 0.15;
+}
+[data-theme="dark"] .stat-chip.pixel-stat::before { opacity: 0.4; }
+[data-theme="dark"] .stat-chip.pixel-stat { border-color: rgba(70,100,140,0.3); }
+
+/* 8. Decorative star watermark */
+.arena-section { position: relative; overflow: hidden; }
+.arena-section::after {
+  content: ''; position: absolute; right: -20px; top: -20px;
+  width: 160px; height: 160px;
+  background: url('assets/star256.png') center / contain no-repeat;
+  image-rendering: pixelated; opacity: 0.08; pointer-events: none;
+  animation: star-rotate 30s linear infinite;
+}
+[data-theme="dark"] .arena-section::after { opacity: 0.15; }
+@keyframes star-rotate { to { transform: rotate(360deg); } }
+
+/* ================================================================
+   BANNER CAROUSEL
+   ================================================================ */
+.banner-carousel {
+  position: relative; margin: 12px 14px 0; overflow: hidden;
+  border-radius: 14px;
+}
+@media (min-width: 769px) { .banner-carousel { margin: 20px 24px 0; border-radius: 16px; } }
+.banner-track {
+  display: flex; transition: transform 0.5s ease;
+}
+.banner-slide {
+  min-width: 100%; position: relative;
+}
+.banner-slide img {
+  width: 100%; height: 180px; object-fit: cover; display: block;
+}
+@media (min-width: 769px) { .banner-slide img { height: 320px; } }
+@media (min-width: 1200px) { .banner-slide img { height: 400px; } }
+.banner-slide .banner-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+  display: flex; align-items: flex-end; padding: 20px 24px;
+}
+.banner-slide .banner-caption {
+  color: #FFF; font-size: 16px; font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+@media (min-width: 769px) { .banner-slide .banner-caption { font-size: 22px; } }
+.banner-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(0,0,0,0.4); border: none; color: #FFF;
+  font-size: 18px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(4px); transition: background 0.2s;
+  z-index: 5;
+}
+.banner-nav:hover { background: rgba(0,0,0,0.7); }
+.banner-nav.prev { left: 12px; }
+.banner-nav.next { right: 12px; }
+.banner-dots {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 5;
+}
+.banner-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.4); border: none; cursor: pointer;
+  transition: all 0.2s;
+}
+.banner-dot.active { background: #FFF; width: 20px; border-radius: 4px; }
+
+/* ================================================================
+   ANNOUNCEMENT / NEWS SECTION
+   ================================================================ */
+.announce-section {
+  margin: 16px 16px 0;
+}
+@media (min-width: 769px) { .announce-section { margin: 20px 24px 0; } }
+.announce-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.announce-header h3 {
+  font-size: 17px; font-weight: 800; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.announce-more {
+  font-size: 12px; font-weight: 600; color: var(--primary);
+  text-decoration: none; cursor: pointer;
+}
+.announce-list { display: flex; flex-direction: column; gap: 10px; }
+.announce-item {
+  display: flex; gap: 14px; padding: 14px;
+  background: var(--bg-card); border: 1px solid var(--border-card);
+  border-radius: 14px; box-shadow: var(--shadow-card);
+  transition: background 0.3s, border-color 0.3s;
+  cursor: pointer; text-decoration: none; color: inherit;
+}
+.announce-item:hover { border-color: var(--primary); }
+.announce-thumb {
+  width: 80px; height: 60px; border-radius: 8px;
+  background: var(--bg-tab); flex-shrink: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+@media (min-width: 769px) { .announce-thumb { width: 120px; height: 80px; } }
+.announce-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.announce-thumb .thumb-placeholder {
+  font-size: 24px; opacity: 0.3;
+}
+.announce-info { flex: 1; min-width: 0; }
+.announce-title {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.announce-date { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+.announce-summary {
+  font-size: 12px; color: var(--text-secondary); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.announce-tag {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  background: var(--primary-light); color: var(--primary);
+  font-size: 10px; font-weight: 700; border-radius: 4px;
+  margin-right: 6px;
+}
+.announce-tag.event { background: var(--accent-light); color: var(--accent); }
+.announce-tag.update { background: var(--info); color: #FFF; background: #EBF2FF; color: #3B82F6; }
+
+/* PC: announcement grid 2 columns */
+@media (min-width: 960px) {
+  .announce-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+
+/* ===== UTILITIES ===== */
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--text-muted); }
+.fw-700 { font-weight: 700; }
+.fw-800 { font-weight: 800; }
+.desktop-only { display: block; }
+@media (max-width: 768px) { .desktop-only { display: none !important; } }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ===== FORCE MOBILE (preview toggle) ===== */
+.app-shell.force-mobile { max-width: 420px; margin: 0 auto; border: 2px solid var(--border); border-radius: 24px; overflow: hidden; min-height: 100vh; }
+.app-shell.force-mobile .top-nav { position: sticky; border-radius: 24px 24px 0 0; }
+.app-shell.force-mobile .nav-links { display: none; }
+.app-shell.force-mobile .nav-user { display: none; }
+.app-shell.force-mobile .hamburger { display: flex; }
+.app-shell.force-mobile .main-content { padding-top: 0; padding-bottom: 64px; }
+.app-shell.force-mobile .bottom-nav { display: flex; position: sticky; }
+.app-shell.force-mobile .desktop-only { display: none !important; }
+.app-shell.force-mobile .banner-carousel { margin: 12px 14px 0; border-radius: 14px; }
+.app-shell.force-mobile .header-hero { margin: 12px 14px 0; border-radius: 14px; }
+.app-shell.force-mobile .room-header-panel { margin: 12px 14px 0; border-radius: 14px; }
+.app-shell.force-mobile .invite-hero { margin: 12px 14px 0; border-radius: 14px; }
+.app-shell.force-mobile .room-grid,
+.app-shell.force-mobile .match-grid { grid-template-columns: 1fr; padding: 0; }
+.app-shell.force-mobile .lb-layout,
+.app-shell.force-mobile .invite-body { display: block; }
+</style>
+</head>
+<body>
+
+<!-- View Mode Toggle (desktop only) -->
+<div class="view-toggle">
+  <button class="active" onclick="setView('pc', this)">PC</button>
+  <button onclick="setView('mobile', this)">Mobile</button>
+</div>
+
+<div class="app-shell" id="appShell">
+
+  <!-- ===== TOP NAVBAR ===== -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <a class="brand" href="#">
+        <div class="brand-icon">B</div>
+        <div class="brand-text">ball-in</div>
+      </a>
+      <div class="nav-links">
+        <button class="nav-link active" onclick="navTo('rooms', this)">
+          <img class="nl-icon" src="assets/icon-house.png">
+          首頁
+        </button>
+        <button class="nav-link" onclick="navTo('prediction', this)">
+          <img class="nl-icon" src="assets/icon-gamepad.png">
+          預測房間
+        </button>
+        <button class="nav-link" onclick="navTo('leaderboard', this)">
+          <img class="nl-icon" src="assets/icon-medal1.png">
+          排行榜
+        </button>
+        <button class="nav-link" onclick="navTo('invite', this)">
+          <img class="nl-icon" src="assets/icon-share.png">
+          邀請分享
+        </button>
+        <button class="nav-link" onclick="navTo('rooms', this)">
+          <img class="nl-icon" src="assets/icon-mail.png">
+          通知
+          <span class="nl-badge">3</span>
+        </button>
+      </div>
+      <div class="nav-right">
+        <div class="nav-user">
+          <div class="nav-avatar">J</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-primary)">JhanWei</div>
+            <div class="nav-pts">1,280 分</div>
+          </div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="切換主題">&#9728;</button>
+      </div>
+      <button class="hamburger" onclick="document.querySelector('.bottom-nav').scrollIntoView()">
+        <span></span><span></span><span></span>
+      </button>
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn2" title="切換主題" style="margin-left:8px;display:none">&#9728;</button>
+    </div>
+  </nav>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+    <div class="container">
+
+    <!-- ==================== PAGE 1: ROOM LIST ==================== -->
+    <section id="page-rooms" class="page-section active">
+
+      <!-- Banner Carousel -->
+      <div class="banner-carousel" id="bannerCarousel">
+        <div class="banner-track" id="bannerTrack">
+          <div class="banner-slide">
+            <img src="https://ball-in.club/media/banners/9ab0303e4c634bcaa571186dd4387840_4%E6%9C%88%E9%8C%A6%E6%A8%99%E8%B3%BD.jpg" alt="4月錦標賽">
+            <div class="banner-overlay"><span class="banner-caption">4月 NBA &middot; MLB 錦標賽 火熱開戰</span></div>
+          </div>
+          <div class="banner-slide">
+            <img src="https://ball-in.club/media/banners/c20925d4c1434109997fe2437ae106ed_%E6%88%91%E5%80%91%E5%8F%83%E8%88%87%E6%AF%94%E8%B3%BD.jpg" alt="我們參與比賽">
+            <div class="banner-overlay"><span class="banner-caption">全新型態的運動賽事預測錦標賽平台</span></div>
+          </div>
+          <div class="banner-slide">
+            <img src="https://ball-in.club/media/banners/b245ef3ad90a460eaf852bd7b389784e_line_oa_chat_260412_140222.jpg" alt="LINE 官方帳號">
+            <div class="banner-overlay"><span class="banner-caption">加入 LINE 官方帳號，掌握最新動態</span></div>
+          </div>
+          <div class="banner-slide">
+            <img src="https://ball-in.club/media/banners/616ad65f31ae44f38211b5c3a6a96f4a_0410%E5%86%A0%E8%BB%8D%E6%A6%9C.jpg" alt="冠軍榜">
+            <div class="banner-overlay"><span class="banner-caption">冠軍榜 &mdash; 看看誰是預測之王</span></div>
+          </div>
+        </div>
+        <button class="banner-nav prev" onclick="slideBanner(-1)">&#10094;</button>
+        <button class="banner-nav next" onclick="slideBanner(1)">&#10095;</button>
+        <div class="banner-dots">
+          <button class="banner-dot active" onclick="goToBanner(0)"></button>
+          <button class="banner-dot" onclick="goToBanner(1)"></button>
+          <button class="banner-dot" onclick="goToBanner(2)"></button>
+          <button class="banner-dot" onclick="goToBanner(3)"></button>
+        </div>
+      </div>
+
+      <div class="header-hero arena-section">
+        <div class="hero-content">
+          <h1 class="pixel-banner-title">ball-in</h1>
+          <p style="max-width:420px;line-height:1.6;margin-top:8px">
+            開房 &rarr; 預測賽事 &rarr; 淘汰生存 &rarr; 瓜分獎池<br>
+            <span style="opacity:0.75;font-size:12px">邀請朋友加入，比拼預測勝率，挑戰排行榜冠軍</span>
+          </p>
+          <div class="stat-row">
+            <div class="stat-chip pixel-stat">
+              <div class="stat-val">1,280</div>
+              <div class="stat-label">積分</div>
+            </div>
+            <div class="stat-chip pixel-stat">
+              <div class="stat-val">3</div>
+              <div class="stat-label">進行中</div>
+            </div>
+            <div class="stat-chip pixel-stat">
+              <div class="stat-val">12</div>
+              <div class="stat-label">勝場</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:center; padding:16px 0 8px; gap:12px;">
+        <div class="sprite-progress"></div>
+        <span class="text-xs text-muted fw-700">今日預測進度</span>
+      </div>
+
+      <div class="tab-bar">
+        <button class="active">全部</button>
+        <button>進行中</button>
+        <button>已結束</button>
+        <button>免費房</button>
+      </div>
+
+      <!-- Announcement Section -->
+      <div class="announce-section">
+        <div class="announce-header">
+          <h3>
+            <span class="section-banner">&#128227; 公告</span>
+          </h3>
+          <a class="announce-more">查看全部 &rarr;</a>
+        </div>
+        <div class="announce-list">
+          <a class="announce-item" href="#">
+            <div class="announce-thumb">
+              <img src="https://ball-in.club/media/banners/9ab0303e4c634bcaa571186dd4387840_4%E6%9C%88%E9%8C%A6%E6%A8%99%E8%B3%BD.jpg" alt="">
+            </div>
+            <div class="announce-info">
+              <div><span class="announce-tag event">活動</span><span class="announce-date">2026-04-10</span></div>
+              <div class="announce-title">ball-in x 4月 NBA &middot; MLB 錦標賽正式開跑！</div>
+              <div class="announce-summary">每日體驗房開放中，FTB、MLB、NBA 三大賽事任你預測，免費參加累積戰績</div>
+            </div>
+          </a>
+          <a class="announce-item" href="#">
+            <div class="announce-thumb">
+              <img src="https://ball-in.club/media/banners/616ad65f31ae44f38211b5c3a6a96f4a_0410%E5%86%A0%E8%BB%8D%E6%A6%9C.jpg" alt="">
+            </div>
+            <div class="announce-info">
+              <div><span class="announce-tag">公告</span><span class="announce-date">2026-04-08</span></div>
+              <div class="announce-title">冠軍榜 &mdash; 三月賽季結算完成</div>
+              <div class="announce-summary">恭喜三月賽季前三名玩家！獎勵已發放至帳戶，快來查看你的排名</div>
+            </div>
+          </a>
+          <a class="announce-item desktop-only" href="#">
+            <div class="announce-thumb">
+              <img src="https://ball-in.club/media/banners/b245ef3ad90a460eaf852bd7b389784e_line_oa_chat_260412_140222.jpg" alt="">
+            </div>
+            <div class="announce-info">
+              <div><span class="announce-tag update">更新</span><span class="announce-date">2026-04-05</span></div>
+              <div class="announce-title">加入 LINE 官方帳號，即時通知不漏接</div>
+              <div class="announce-summary">綁定 LINE 帳號，淘汰通知、結算結果、朋友加入等重要事件即時推送</div>
+            </div>
+          </a>
+          <a class="announce-item desktop-only" href="#">
+            <div class="announce-thumb">
+              <div class="thumb-placeholder">&#127942;</div>
+            </div>
+            <div class="announce-info">
+              <div><span class="announce-tag">公告</span><span class="announce-date">2026-04-01</span></div>
+              <div class="announce-title">新功能上線：邀請朋友一起 PK</div>
+              <div class="announce-summary">現在可以產生專屬邀請連結，朋友點擊後免密碼直接加入房間挑戰你</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:8px">
+        <span class="section-banner">&#127968; 賽事房間</span>
+      </div>
+
+      <div class="room-grid">
+        <!-- Room 1: Active (featured with pixel frame) -->
+        <div class="pixel-card green pixel-frame-card">
+          <div class="pixel-card-inner">
+            <div class="room-card-top">
+              <div><div class="room-title">MLB 季中對決</div><div class="room-sport">MLB &middot; 讓分盤</div></div>
+              <span class="pixel-badge badge-active">進行中</span>
+            </div>
+            <div class="room-meta">
+              <span>&#128101; 8/10 人</span><span>&#128197; 04/10 ~ 04/17</span><span>&#128176; 100 分</span>
+            </div>
+            <div class="inline-pixel-bar">
+              <label>預測率</label>
+              <div class="bar-wrap">
+                <img class="bar-under-img" src="assets/bar-under.png">
+                <img class="bar-fill-img" src="assets/bar-green.png" style="width:85%">
+                <img class="bar-over-img" src="assets/bar-over.png">
+              </div>
+              <span class="bar-val" style="color:var(--primary)">85%</span>
+            </div>
+            <div class="mt-8" style="display:flex;gap:8px;">
+              <button class="pixel-cta" style="flex:1">進入預測</button>
+              <button class="btn btn-ghost btn-sm"><img src="assets/icon-share.png" style="width:16px;height:16px;filter:var(--icon-filter);image-rendering:pixelated;"></button>
+            </div>
+          </div>
+        </div>
+        <!-- Room 2: Warning -->
+        <div class="pixel-card orange">
+          <div class="pixel-card-inner">
+            <div class="room-card-top">
+              <div><div class="room-title">NBA 季後熱身</div><div class="room-sport">NBA &middot; 一般盤</div></div>
+              <span class="pixel-badge badge-active">進行中</span>
+            </div>
+            <div class="room-meta">
+              <span>&#128101; 12/15 人</span><span>&#128197; 04/08 ~ 04/15</span><span>&#128176; 200 分</span>
+            </div>
+            <div class="inline-pixel-bar">
+              <label>預測率</label>
+              <div class="bar-wrap">
+                <img class="bar-under-img" src="assets/bar-under.png">
+                <img class="bar-fill-img" src="assets/bar-orange.png" style="width:62%">
+                <img class="bar-over-img" src="assets/bar-over.png">
+              </div>
+              <span class="bar-val" style="color:var(--accent)">62%</span>
+            </div>
+            <div class="inline-pixel-bar mt-8">
+              <label>勝率</label>
+              <div class="bar-wrap">
+                <img class="bar-under-img" src="assets/bar-under.png">
+                <img class="bar-fill-img" src="assets/bar-red.png" style="width:28%">
+                <img class="bar-over-img" src="assets/bar-over.png">
+              </div>
+              <span class="bar-val" style="color:var(--danger)">28%</span>
+            </div>
+            <div class="mt-8" style="display:flex;gap:8px;">
+              <button class="btn btn-accent btn-sm" style="flex:1">&#9888;&#65039; 快去預測</button>
+              <button class="btn btn-ghost btn-sm"><img src="assets/icon-share.png" style="width:16px;height:16px;filter:var(--icon-filter);image-rendering:pixelated;"></button>
+            </div>
+          </div>
+        </div>
+        <!-- Room 3: Pending -->
+        <div class="pixel-card blue">
+          <div class="pixel-card-inner">
+            <div class="room-card-top">
+              <div><div class="room-title">週末大亂鬥</div><div class="room-sport">MLB + NBA &middot; 混合盤</div></div>
+              <span class="pixel-badge badge-pending">即將開始</span>
+            </div>
+            <div class="room-meta">
+              <span>&#128101; 5/20 人</span><span>&#128197; 04/19 ~ 04/26</span><span>&#128176; 免費</span>
+            </div>
+            <div class="mt-8" style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" style="flex:1">加入房間</button>
+              <button class="btn btn-ghost btn-sm"><img src="assets/icon-link.png" style="width:16px;height:16px;filter:var(--icon-filter);image-rendering:pixelated;"></button>
+            </div>
+          </div>
+        </div>
+        <!-- Room 4: Finished -->
+        <div class="pixel-card">
+          <div class="pixel-card-inner" style="opacity:0.65">
+            <div class="room-card-top">
+              <div><div class="room-title">三月瘋狂賽</div><div class="room-sport">NBA &middot; 讓分盤</div></div>
+              <span class="pixel-badge badge-finished">已結束</span>
+            </div>
+            <div class="room-meta"><span>&#127942; 第 2 名</span><span>&#128176; +350 分</span></div>
+          </div>
+        </div>
+        <!-- Room 5 (PC) -->
+        <div class="pixel-card green desktop-only">
+          <div class="pixel-card-inner">
+            <div class="room-card-top">
+              <div><div class="room-title">每日免費房 #42</div><div class="room-sport">MLB &middot; 一般盤</div></div>
+              <span class="pixel-badge badge-active">進行中</span>
+            </div>
+            <div class="room-meta"><span>&#128101; 18/30 人</span><span>&#128197; 04/14</span><span>&#128176; 免費</span></div>
+            <div class="inline-pixel-bar">
+              <label>預測率</label>
+              <div class="bar-wrap">
+                <img class="bar-under-img" src="assets/bar-under.png">
+                <img class="bar-fill-img" src="assets/bar-green.png" style="width:100%">
+                <img class="bar-over-img" src="assets/bar-over.png">
+              </div>
+              <span class="bar-val" style="color:var(--primary)">100%</span>
+            </div>
+            <div class="mt-8"><button class="btn btn-primary btn-sm btn-full">查看結果</button></div>
+          </div>
+        </div>
+        <!-- Room 6 (PC) -->
+        <div class="pixel-card desktop-only">
+          <div class="pixel-card-inner" style="opacity:0.65">
+            <div class="room-card-top">
+              <div><div class="room-title">二月精英挑戰</div><div class="room-sport">NBA &middot; 讓分盤</div></div>
+              <span class="pixel-badge badge-finished">已結束</span>
+            </div>
+            <div class="room-meta"><span>&#127942; 第 1 名</span><span>&#128176; +520 分</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:20px"></div>
+    </section>
+
+    <!-- ==================== PAGE 2: PREDICTION ==================== -->
+    <section id="page-prediction" class="page-section">
+      <div class="room-header-panel arena-section">
+        <h2 class="pixel-banner-title">MLB 季中對決</h2>
+        <div class="room-desc">讓分盤 &middot; 04/10 ~ 04/17 &middot; Top 3 獎勵</div>
+        <div class="room-stats-strip">
+          <span class="room-stat-pill">&#128101; 8 人</span>
+          <span class="room-stat-pill">&#128202; 52 場</span>
+          <span class="room-stat-pill">&#128176; 獎池 800</span>
+          <span class="room-stat-pill desktop-only">&#128336; 剩餘 3 天</span>
+          <span class="room-stat-pill desktop-only">&#9989; 已預測 44/52</span>
+        </div>
+      </div>
+      <div class="my-status">
+        <div class="my-status-avatar">J</div>
+        <div class="my-status-info">
+          <div class="my-status-name">JhanWei</div>
+          <div class="my-status-detail"><span>排名 #2</span><span>勝率 45%</span><span>預測率 85%</span></div>
+        </div>
+        <div class="my-status-pts">6.2</div>
+      </div>
+      <div class="pixel-divider"></div>
+      <div class="section-title">
+        <span class="section-banner">
+          <img class="pixel-icon" src="assets/icon-star.png">
+          今日賽事 (8 場)
+        </span>
+      </div>
+      <div class="match-grid">
+        <div class="match-card glow-panel">
+          <div class="match-header"><span class="match-league">MLB</span><span class="match-time">04/14 19:10</span></div>
+          <div class="match-teams">
+            <div class="team"><div class="team-name">洋基</div><div class="team-odds">1.85</div></div>
+            <div class="match-vs">VS</div>
+            <div class="team"><div class="team-name">紅襪</div><div class="team-odds">2.05</div></div>
+          </div>
+          <div class="match-draw"><span class="draw-label">讓分</span><span class="draw-odds" style="margin-left:6px">-1.5</span></div>
+          <div class="match-actions"><button class="pick-btn selected">主勝 1.85</button><button class="pick-btn">客勝 2.05</button></div>
+        </div>
+        <div class="match-card">
+          <div class="match-header"><span class="match-league">MLB</span><span class="match-time">04/14 20:40</span></div>
+          <div class="match-teams">
+            <div class="team"><div class="team-name">道奇</div><div class="team-odds">1.45</div></div>
+            <div class="match-vs">VS</div>
+            <div class="team"><div class="team-name">巨人</div><div class="team-odds">2.80</div></div>
+          </div>
+          <div class="match-draw"><span class="draw-label">讓分</span><span class="draw-odds" style="margin-left:6px">-1.5</span></div>
+          <div class="match-actions"><button class="pick-btn">主勝 1.45</button><button class="pick-btn">客勝 2.80</button></div>
+        </div>
+        <div class="match-card" style="opacity:0.6">
+          <div class="match-header"><span class="match-league" style="color:var(--text-muted)">MLB &middot; 已結束</span><span class="match-time">04/14 07:10</span></div>
+          <div class="match-teams">
+            <div class="team"><div class="team-name">天使</div><div class="team-odds" style="color:var(--primary)">&#10003; 1.90</div></div>
+            <div class="match-vs" style="background:var(--primary-light);color:var(--primary)">4:2</div>
+            <div class="team"><div class="team-name">水手</div><div class="team-odds" style="color:var(--text-muted)">2.00</div></div>
+          </div>
+          <div class="match-actions"><button class="pick-btn selected" style="opacity:0.8">&#10003; 預測正確 +1.90</button></div>
+        </div>
+        <div class="match-card" style="opacity:0.6">
+          <div class="match-header"><span class="match-league" style="color:var(--text-muted)">MLB &middot; 已結束</span><span class="match-time">04/14 07:05</span></div>
+          <div class="match-teams">
+            <div class="team"><div class="team-name">太空人</div><div class="team-odds" style="color:var(--text-muted)">1.70</div></div>
+            <div class="match-vs" style="background:var(--danger-light);color:var(--danger)">1:3</div>
+            <div class="team"><div class="team-name">遊騎兵</div><div class="team-odds" style="color:var(--danger)">&#10007; 2.15</div></div>
+          </div>
+          <div class="match-actions"><button class="pick-btn" style="opacity:0.6;border-color:var(--danger);color:var(--danger)">&#10007; 預測錯誤</button></div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;"><button class="pixel-cta" style="width:100%;max-width:500px">確認送出 (已選 1/8 場)</button></div>
+      <div style="height:20px"></div>
+    </section>
+
+    <!-- ==================== PAGE 3: LEADERBOARD ==================== -->
+    <section id="page-leaderboard" class="page-section">
+      <div class="room-header-panel arena-section">
+        <h2 class="pixel-banner-title">MLB 季中對決 &middot; 排行榜</h2>
+        <div class="room-desc">Top 3 獎勵 &middot; 獎池 800 分 &middot; 剩餘 3 天</div>
+      </div>
+      <div class="lb-layout">
+        <div>
+          <div class="lb-podium">
+            <div class="podium-slot second">
+              <div class="podium-frame"><div class="podium-avatar">K</div></div>
+              <img class="podium-medal" src="assets/icon-medal2.png" style="filter:brightness(0) saturate(100%) invert(75%) sepia(10%) saturate(500%) hue-rotate(180deg)">
+              <div class="podium-name">Kevin</div><div class="podium-pts">7.8 分</div><div class="podium-bar"></div>
+            </div>
+            <div class="podium-slot first">
+              <div class="sprite-soul"></div>
+              <div class="podium-frame gold"><div class="podium-avatar">A</div></div>
+              <img class="podium-medal" src="assets/icon-medal1.png" style="filter:brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(600%) hue-rotate(5deg)">
+              <div class="podium-name">Alice</div><div class="podium-pts">9.2 分</div><div class="podium-bar"></div>
+            </div>
+            <div class="podium-slot third">
+              <div class="podium-frame bronze"><div class="podium-avatar">J</div></div>
+              <img class="podium-medal" src="assets/icon-medal3.png" style="filter:brightness(0) saturate(100%) invert(55%) sepia(40%) saturate(400%) hue-rotate(350deg)">
+              <div class="podium-name">JhanWei</div><div class="podium-pts">6.2 分</div><div class="podium-bar"></div>
+            </div>
+          </div>
+          <div class="pixel-card green pixel-frame-card">
+            <div class="pixel-card-inner">
+              <div class="flex-between mb-8">
+                <span class="text-sm fw-700">JhanWei &middot; 第 3 名</span>
+                <span style="font-size:18px;font-weight:800;color:var(--accent)">6.2 分</span>
+              </div>
+              <div class="inline-pixel-bar">
+                <label>勝率</label>
+                <div class="bar-wrap">
+                  <img class="bar-under-img" src="assets/bar-under.png">
+                  <img class="bar-fill-img" src="assets/bar-green.png" style="width:45%">
+                  <img class="bar-over-img" src="assets/bar-over.png">
+                </div>
+                <span class="bar-val" style="color:var(--primary)">45%</span>
+              </div>
+              <div class="inline-pixel-bar mt-8">
+                <label>預測率</label>
+                <div class="bar-wrap">
+                  <img class="bar-under-img" src="assets/bar-under.png">
+                  <img class="bar-fill-img" src="assets/bar-green.png" style="width:85%">
+                  <img class="bar-over-img" src="assets/bar-over.png">
+                </div>
+                <span class="bar-val" style="color:var(--primary)">85%</span>
+              </div>
+              <div style="display:flex;gap:14px;margin-top:14px;font-size:12px;color:var(--text-secondary)">
+                <span>&#9989; 正確 18</span><span>&#10060; 錯誤 22</span><span>&#9203; 未結算 8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="pixel-divider" style="margin-top:12px"></div>
+          <div class="lb-list" style="margin-top:12px">
+            <div class="lb-row lb-you">
+              <span class="lb-rank" style="color:var(--primary)">3</span>
+              <div class="lb-avatar" style="background:var(--primary-light);color:var(--primary)">J</div>
+              <div class="lb-info"><div class="lb-name" style="color:var(--primary)">JhanWei (你)</div><div class="lb-stat">勝率 45% &middot; 預測率 85%</div></div>
+              <span class="lb-pts">6.2</span>
+            </div>
+            <div class="lb-row">
+              <span class="lb-rank">4</span><div class="lb-avatar">M</div>
+              <div class="lb-info"><div class="lb-name">Mike</div><div class="lb-stat">勝率 38% &middot; 預測率 90%</div></div>
+              <span class="lb-pts">5.1</span>
+            </div>
+            <div class="lb-row">
+              <span class="lb-rank">5</span><div class="lb-avatar">S</div>
+              <div class="lb-info"><div class="lb-name">Sarah</div><div class="lb-stat">勝率 32% &middot; 預測率 78%</div></div>
+              <span class="lb-pts">4.3</span>
+            </div>
+            <div class="lb-row lb-eliminated">
+              <span class="lb-rank">6</span><div class="lb-avatar">T</div>
+              <div class="lb-info"><div class="lb-name">Tom<span class="eliminated-badge">淘汰</span></div><div class="lb-stat">勝率 20% &middot; <span style="color:var(--danger)">預測率 45%</span></div></div>
+              <span class="lb-pts" style="color:var(--text-muted)">2.8</span>
+            </div>
+            <div class="lb-row lb-eliminated">
+              <span class="lb-rank">7</span><div class="lb-avatar">L</div>
+              <div class="lb-info"><div class="lb-name">Lisa<span class="eliminated-badge">淘汰</span></div><div class="lb-stat">勝率 15% &middot; <span style="color:var(--danger)">預測率 52%</span></div></div>
+              <span class="lb-pts" style="color:var(--text-muted)">1.5</span>
+            </div>
+            <div class="lb-row lb-eliminated">
+              <span class="lb-rank">8</span><div class="lb-avatar">D</div>
+              <div class="lb-info"><div class="lb-name">David<span class="eliminated-badge">淘汰</span></div><div class="lb-stat">勝率 22% &middot; <span style="color:var(--danger)">預測率 38%</span></div></div>
+              <span class="lb-pts" style="color:var(--text-muted)">0.9</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:20px"></div>
+    </section>
+
+    <!-- ==================== PAGE 4: INVITE ==================== -->
+    <section id="page-invite" class="page-section">
+      <div class="invite-hero arena-section">
+        <div class="sprite-soul" style="margin-bottom:8px"></div>
+        <h2 class="pixel-banner-title">邀請朋友一起 PK</h2>
+        <p>分享連結，朋友加入後免輸密碼直接開戰</p>
+        <button class="pixel-cta">
+          <img src="assets/icon-link.png" style="width:18px;height:18px;filter:brightness(0);image-rendering:pixelated;vertical-align:middle;margin-right:4px">
+          複製邀請連結
+        </button>
+      </div>
+      <div class="invite-link-box">
+        <input class="invite-link-input" value="https://ball-in.tw/join/a3f8c1d2" readonly>
+        <button class="btn btn-primary btn-sm">複製</button>
+      </div>
+      <div class="invite-body">
+        <div>
+          <div class="invite-stats">
+            <div class="invite-stat-card"><div class="invite-stat-val">5</div><div class="invite-stat-label">已邀請</div></div>
+            <div class="invite-stat-card"><div class="invite-stat-val">3</div><div class="invite-stat-label">已加入</div></div>
+            <div class="invite-stat-card"><div class="invite-stat-val">60%</div><div class="invite-stat-label">轉換率</div></div>
+            <div class="invite-stat-card"><div class="invite-stat-val" style="color:var(--accent)">+150</div><div class="invite-stat-label">邀請獎勵</div></div>
+          </div>
+          <div class="section-title">
+            <img class="pixel-icon" src="assets/icon-share.png">
+            分享卡預覽
+          </div>
+          <div class="share-card-preview">
+            <img src="assets/icon-medal1.png" style="width:48px;height:48px;filter:brightness(0) saturate(100%) invert(85%) sepia(40%) saturate(600%) hue-rotate(10deg);image-rendering:pixelated;margin-bottom:8px">
+            <div class="share-rank">#2</div>
+            <div class="share-user">JhanWei</div>
+            <div class="share-msg">在「MLB 季中對決」排名第 2，快來挑戰我！</div>
+            <div class="share-cta">
+              <img src="assets/icon-gamepad.png" style="width:18px;height:18px;filter:invert(1);image-rendering:pixelated;">
+              加入挑戰
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="padding:0 16px 10px">
+            <button class="pixel-cta secondary" style="width:100%;max-width:500px;margin-bottom:8px">
+              <img src="assets/icon-share.png" style="width:18px;height:18px;filter:brightness(0);image-rendering:pixelated;vertical-align:middle;margin-right:4px">
+              分享到 LINE
+            </button>
+            <button class="btn btn-outline btn-full" style="max-width:500px">複製分享文字</button>
+          </div>
+          <div class="pixel-divider mt-16"></div>
+          <div class="section-title">邀請紀錄</div>
+          <div style="padding:0 16px 20px">
+            <div class="lb-row">
+              <div class="lb-avatar" style="background:var(--primary-light);color:var(--primary)">K</div>
+              <div class="lb-info"><div class="lb-name">Kevin</div><div class="lb-stat">已加入 &middot; 已完成首次預測</div></div>
+              <span style="font-size:13px;font-weight:700;color:var(--primary)">+50</span>
+            </div>
+            <div class="lb-row">
+              <div class="lb-avatar" style="background:var(--accent-light);color:var(--accent)">M</div>
+              <div class="lb-info"><div class="lb-name">Mike</div><div class="lb-stat">已加入 &middot; 尚未預測</div></div>
+              <span style="font-size:13px;font-weight:700;color:var(--text-muted)">待確認</span>
+            </div>
+            <div class="lb-row" style="opacity:0.5">
+              <div class="lb-avatar">?</div>
+              <div class="lb-info"><div class="lb-name">未知</div><div class="lb-stat">已點擊連結 &middot; 未註冊</div></div>
+              <span style="font-size:13px;color:var(--text-muted)">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:20px"></div>
+    </section>
+
+    </div><!-- /.container -->
+
+    <!-- Mobile Bottom Nav -->
+    <div class="bottom-nav">
+      <button class="bottom-nav-item active" onclick="navTo('rooms',this,true)">
+        <img class="bnav-icon" src="assets/icon-house.png">
+        <span class="bnav-label">首頁</span>
+      </button>
+      <button class="bottom-nav-item" onclick="navTo('prediction',this,true)">
+        <img class="bnav-icon" src="assets/icon-gamepad.png">
+        <span class="bnav-label">預測</span>
+      </button>
+      <button class="bottom-nav-item" onclick="navTo('rooms',this,true)">
+        <div class="notif-dot"><img class="bnav-icon" src="assets/icon-mail.png"></div>
+        <span class="bnav-label">通知</span>
+      </button>
+      <button class="bottom-nav-item" onclick="navTo('leaderboard',this,true)">
+        <img class="bnav-icon" src="assets/icon-medal1.png">
+        <span class="bnav-label">排行</span>
+      </button>
+      <button class="bottom-nav-item" onclick="navTo('invite',this,true)">
+        <img class="bnav-icon" src="assets/icon-share.png">
+        <span class="bnav-label">邀請</span>
+      </button>
+    </div>
+  </main>
+</div>
+
+<script>
+// Banner carousel
+let bannerIdx = 0;
+const bannerCount = 4;
+let bannerTimer = setInterval(() => slideBanner(1), 4000);
+
+function slideBanner(dir) {
+  bannerIdx = (bannerIdx + dir + bannerCount) % bannerCount;
+  updateBanner();
+  resetBannerTimer();
+}
+function goToBanner(i) {
+  bannerIdx = i;
+  updateBanner();
+  resetBannerTimer();
+}
+function updateBanner() {
+  const track = document.getElementById('bannerTrack');
+  if (track) track.style.transform = 'translateX(-' + (bannerIdx * 100) + '%)';
+  document.querySelectorAll('.banner-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === bannerIdx);
+  });
+}
+function resetBannerTimer() {
+  clearInterval(bannerTimer);
+  bannerTimer = setInterval(() => slideBanner(1), 4000);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  const icon = next === 'light' ? '\u2600' : '\u263E';
+  document.getElementById('themeBtn').innerHTML = icon;
+  const btn2 = document.getElementById('themeBtn2');
+  if (btn2) btn2.innerHTML = icon;
+}
+
+function navTo(id, btn, isMobile) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+
+  // Sync desktop nav links
+  const links = document.querySelectorAll('.nav-link');
+  const map = { rooms: 0, prediction: 1, leaderboard: 2, invite: 3 };
+  links.forEach(l => l.classList.remove('active'));
+  if (map[id] !== undefined && links[map[id]]) links[map[id]].classList.add('active');
+
+  // Sync mobile bottom nav
+  if (isMobile) {
+    const bnMap = { rooms: 0, prediction: 1, leaderboard: 3, invite: 4 };
+    document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setView(mode, btn) {
+  document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const shell = document.getElementById('appShell');
+  const themeBtn2 = document.getElementById('themeBtn2');
+  if (mode === 'mobile') {
+    shell.classList.add('force-mobile');
+    if (themeBtn2) themeBtn2.style.display = 'flex';
+  } else {
+    shell.classList.remove('force-mobile');
+    if (themeBtn2) themeBtn2.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>
